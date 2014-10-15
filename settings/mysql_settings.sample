@@ -1,0 +1,8 @@
+# you'll need to fill-in the following fields and
+# rename this file to mysql_settings
+
+host: "localhost"
+user: "username"
+passwd: "password"
+socket: "/var/lib/mysql/mysql.sock"
+db: "database_name"
