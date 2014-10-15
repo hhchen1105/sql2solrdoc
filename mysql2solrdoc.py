@@ -2,13 +2,15 @@
 
 # Hung-Hsuan Chen <hhchen@psu.edu>
 # Creation Date : 12-19-2012
-# Last Modified: Wed 15 Oct 2014 02:49:14 PM CST
+# Last Modified: Wed 15 Oct 2014 03:52:42 PM CST
 
 import os
 import sys
 
 from lxml import etree
+
 import mysql_util
+import settings.field_mapping
 
 
 def valid_XML_char_ordinal(i):
@@ -30,10 +32,15 @@ def assign_xml_node_text(node, text):
 def create_solr_doc_files():
     batchsize = 100000
     solr_file_folder = "./solr_files"
-    db, cursor = mysql_util.init_db()
-    print 'Querying paper contents'
-    cursor.execute("""SELECT GOODS_CODE, GOODS_NAME, KEYWORD, BRAND_NAME, SALE_PRICE, DESCRIBE_301, DESCRIBE_302, UPDATE_DATE, last_update FROM ecgoods""")
+    table_name = settings.field_mapping.sql_table_name
+    field_mapping = settings.field_mapping.field_mapping
 
+    db, cursor = mysql_util.init_db()
+    print 'Querying database'
+    sql = 'SELECT %s FROM %s' % (','.join(field_mapping.keys()), table_name)
+    cursor.execute(sql)
+
+    # TODO: start from here
     num_files = 0
     while True:
         rows = cursor.fetchmany(batchsize)

@@ -1,5 +1,3 @@
 1. Modify mysql2solrdoc.py:
-   (1) read settings/field_mapping.sample.py
-   (2) use the info in the above file to generate query string
-   (3) use the info in the above file and the query result to generate solr xml document
-   (4) Should I generate partial contents for the schema file?
+   (1) use the info in the above file and the query result to generate solr xml document
+   (2) Should I generate partial contents for the schema file?
