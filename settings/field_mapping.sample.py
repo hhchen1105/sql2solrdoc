@@ -12,4 +12,5 @@ field_mapping = collections.OrderedDict([
     ('column1', ('id', 'string')),
     ('column2', ('title', 'text_general')),
     ('column3', ('price', 'int')),
+    ('column4', ('date_and_time', 'date')),
 ])

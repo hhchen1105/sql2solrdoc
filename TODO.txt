@@ -1,3 +1,3 @@
-1. Modify mysql2solrdoc.py:
-   (1) use the info in the above file and the query result to generate solr xml document
-   (2) Should I generate partial contents for the schema file?
+1. enerate partial contents for the schema file
+
+2. Add more solr types to mysql2solrdoc.py

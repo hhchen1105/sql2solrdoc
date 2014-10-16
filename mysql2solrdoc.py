@@ -2,7 +2,7 @@
 
 # Hung-Hsuan Chen <hhchen@psu.edu>
 # Creation Date : 12-19-2012
-# Last Modified: Wed 15 Oct 2014 03:52:42 PM CST
+# Last Modified: Thu 16 Oct 2014 09:41:01 AM CST
 
 import os
 import sys
@@ -31,16 +31,15 @@ def assign_xml_node_text(node, text):
 
 def create_solr_doc_files():
     batchsize = 100000
-    solr_file_folder = "./solr_files"
+    solr_file_folder = "./output_solr_files"
     table_name = settings.field_mapping.sql_table_name
     field_mapping = settings.field_mapping.field_mapping
 
     db, cursor = mysql_util.init_db()
     print 'Querying database'
     sql = 'SELECT %s FROM %s' % (','.join(field_mapping.keys()), table_name)
-    cursor.execute(sql)
 
-    # TODO: start from here
+    cursor.execute(sql)
     num_files = 0
     while True:
         rows = cursor.fetchmany(batchsize)
@@ -49,31 +48,22 @@ def create_solr_doc_files():
         num_files += 1
         sys.stdout.write('Generating doc file number %d\n' % num_files)
         root = etree.Element('add')
-        num_docs_to_gen = len(rows)
+        
         for i, r in enumerate(rows):
-            sys.stdout.write("\r%d / %d, GOODS_CODE: %s" % (i+1, num_docs_to_gen, r[0]))
+            sys.stdout.write("\r%d / %d" % (i+1, len(rows)))
             doc = etree.Element('doc')
-            goods_code = etree.Element("field", name="GOODS_CODE")
-            goods_code.text = str(r[0])
-            goods_name = etree.Element("field", name="GOODS_NAME")
-            assign_xml_node_text(goods_name, r[1]) if r[1] is not None else ''
-            keyword = etree.Element("field", name="KEYWORD")
-            assign_xml_node_text(keyword, r[2]) if r[2] is not None else ''
-            brand_name = etree.Element("field", name="BRAND_NAME")
-            assign_xml_node_text(brand_name, r[3]) if r[3] is not None else ''
-            sale_price = etree.Element("field", name="SALE_PRICE")
-            sale_price.text = str(r[4]) if r[4] is not None else '0'
-            describe_301 = etree.Element("field", name="DESCRIBE_301")
-            assign_xml_node_text(describe_301, r[5]) if r[5] is not None else ''
-            describe_302 = etree.Element("field", name="DESCRIBE_302")
-            assign_xml_node_text(describe_302, r[6]) if r[6] is not None else ''
-            doc.append(goods_code)
-            doc.append(goods_name)
-            doc.append(keyword)
-            doc.append(brand_name)
-            doc.append(sale_price)
-            doc.append(describe_301)
-            doc.append(describe_302)
+            for j, col in enumerate(r):
+                (field_name, field_type) = field_mapping.values()[j]
+                ele = etree.Element("field", name=field_name)
+                if field_type in ['string', 'text_general']:
+                    assign_xml_node_text(ele, col) if col is not None else ''
+                elif field_type in ['int', 'float', 'long', 'double']:
+                    ele.text = str(col) if col is not None else '0'
+                elif field_type in ['date']:
+                    ele.text = col.strftime("%Y-%m-%dT%H:%M:%SZ") if col is not None else ''
+                else:
+                    raise Exception('\nUndefined field type "%s"' % (field_type))
+                doc.append(ele)
             root.append(doc)
         print ''
         if not os.path.isdir(solr_file_folder):
@@ -82,6 +72,7 @@ def create_solr_doc_files():
         tree = etree.ElementTree(root)
         tree.write(f, encoding='utf8', pretty_print=True)
         f.close()
+
     mysql_util.close_db(db, cursor)
 
 
