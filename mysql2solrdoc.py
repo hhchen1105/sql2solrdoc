@@ -2,15 +2,37 @@
 
 # Hung-Hsuan Chen <hhchen@psu.edu>
 # Creation Date : 12-19-2012
-# Last Modified: Thu 16 Oct 2014 09:41:01 AM CST
+# Last Modified: Fri 17 Oct 2014 03:01:13 PM CST
 
 import os
 import sys
 
-from lxml import etree
+import gflags
 
 import mysql_util
 import settings.field_mapping
+
+from lxml import etree
+
+
+FLAGS = gflags.FLAGS
+gflags.DEFINE_string('solr_doc_filename_prefix', '', '')
+
+def usage(cmd):
+    print ('Usage:', cmd,
+            '--solr_doc_filename_prefix="product"')
+    return
+
+
+def check_args(argv):
+    try:
+        argv = FLAGS(argv)
+    except gflags.FlagsError:
+        print FLAGS
+
+    if FLAGS.solr_doc_filename_prefix == '':
+        usage(argv[0])
+        raise Exception('flag --solr_doc_filename_prefix cannot be empty')
 
 
 def valid_XML_char_ordinal(i):
@@ -29,11 +51,8 @@ def assign_xml_node_text(node, text):
         node.text = ''.join(c for c in text if valid_XML_char_ordinal(ord(c))).decode('utf8')
 
 
-def create_solr_doc_files():
+def create_solr_doc_files(table_name, field_mapping, solr_file_folder, solr_doc_filename_prefix):
     batchsize = 100000
-    solr_file_folder = "./output_solr_files"
-    table_name = settings.field_mapping.sql_table_name
-    field_mapping = settings.field_mapping.field_mapping
 
     db, cursor = mysql_util.init_db()
     print 'Querying database'
@@ -68,7 +87,7 @@ def create_solr_doc_files():
         print ''
         if not os.path.isdir(solr_file_folder):
                 os.mkdir(solr_file_folder)
-        f = open(os.path.join(solr_file_folder, 'products%d.xml' % (num_files)), 'w')
+        f = open(os.path.join(solr_file_folder, '%s%d.xml' % (solr_doc_filename_prefix, num_files)), 'w')
         tree = etree.ElementTree(root)
         tree.write(f, encoding='utf8', pretty_print=True)
         f.close()
@@ -76,10 +95,25 @@ def create_solr_doc_files():
     mysql_util.close_db(db, cursor)
 
 
+def create_partial_solr_schema(field_mapping, solr_file_folder):
+    with open(os.path.join(solr_file_folder, 'schema.xml'), 'w') as f:
+        for (field_name, field_type) in field_mapping.values():
+            f.write('<field name="%s" type="%s" indexed="true" stored="true" required="true" multiValued="false"/>\n'
+                    % (field_name, field_type))
+
+
 def main(argv):
-    create_solr_doc_files()
+    check_args(argv)
+
+    table_name = settings.field_mapping.sql_table_name
+    field_mapping = settings.field_mapping.field_mapping
+    solr_file_folder = "./output_solr_files"
+
+    create_solr_doc_files(table_name, field_mapping, solr_file_folder, FLAGS.solr_doc_filename_prefix)
+    create_partial_solr_schema(field_mapping, solr_file_folder)
 
 
 if __name__ == "__main__":
     main(sys.argv)
+
 

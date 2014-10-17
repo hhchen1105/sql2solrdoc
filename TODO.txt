@@ -1,3 +1,0 @@
-1. enerate partial contents for the schema file
-
-2. Add more solr types to mysql2solrdoc.py
