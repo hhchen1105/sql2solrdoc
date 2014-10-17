@@ -2,7 +2,7 @@
 
 # Hung-Hsuan Chen <hhchen@psu.edu>
 # Creation Date : 12-19-2012
-# Last Modified: Fri 17 Oct 2014 03:01:13 PM CST
+# Last Modified: Fri 17 Oct 2014 03:10:12 PM CST
 
 import os
 import sys
@@ -101,15 +101,18 @@ def create_partial_solr_schema(field_mapping, solr_file_folder):
             f.write('<field name="%s" type="%s" indexed="true" stored="true" required="true" multiValued="false"/>\n'
                     % (field_name, field_type))
 
+        for (field_name, field_type) in field_mapping.values():
+            f.write('<copyField source="%s" dest="text"/>\n' % (field_name))
+
 
 def main(argv):
     check_args(argv)
 
-    table_name = settings.field_mapping.sql_table_name
+    #table_name = settings.field_mapping.sql_table_name
     field_mapping = settings.field_mapping.field_mapping
     solr_file_folder = "./output_solr_files"
 
-    create_solr_doc_files(table_name, field_mapping, solr_file_folder, FLAGS.solr_doc_filename_prefix)
+    #create_solr_doc_files(table_name, field_mapping, solr_file_folder, FLAGS.solr_doc_filename_prefix)
     create_partial_solr_schema(field_mapping, solr_file_folder)
 
 
