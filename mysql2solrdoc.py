@@ -2,7 +2,7 @@
 
 # Hung-Hsuan Chen <hhchen@psu.edu>
 # Creation Date : 12-19-2012
-# Last Modified: Fri 21 Nov 2014 03:51:23 PM CST
+# Last Modified: Fri 21 Nov 2014 04:14:36 PM CST
 
 import os
 import sys
@@ -86,7 +86,7 @@ def create_solr_doc_files(table_name, field_mapping, solr_file_folder, solr_doc_
             root.append(doc)
         print ''
         if not os.path.isdir(solr_file_folder):
-                os.mkdir(solr_file_folder)
+            os.mkdir(solr_file_folder)
         f = open(os.path.join(solr_file_folder, '%s%d.xml' % (solr_doc_filename_prefix, num_files)), 'w')
         tree = etree.ElementTree(root)
         tree.write(f, encoding='utf8', pretty_print=True)
