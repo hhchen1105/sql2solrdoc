@@ -1,3 +1,4 @@
 # The mysql settings should *NOT* be uploaded
 mysql_settings
+odbc_settings
 field_mapping.py

@@ -1,0 +1,5 @@
+host: "localhost"
+user: "username"
+passwd: "pwd"
+DRIVER: "{SQL Server}"
+dsn: "sqlserverdatasource"
