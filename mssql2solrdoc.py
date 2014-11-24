@@ -2,7 +2,7 @@
 
 # Hung-Hsuan Chen <hhchen@psu.edu>
 # Creation Date : 12-19-2012
-# Last Modified: Mon 24 Nov 2014 08:34:36 PM CST
+# Last Modified: Mon 24 Nov 2014 08:51:44 PM CST
 
 import os
 import sys
@@ -44,6 +44,7 @@ def valid_XML_char_ordinal(i):
 
 
 def assign_xml_node_text(node, text):
+    text = text if isinstance(text, str) else str(text)
     try:
         node.text = text.encode('utf8') if text is not None else ''
     except:
