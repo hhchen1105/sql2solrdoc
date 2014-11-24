@@ -2,14 +2,14 @@
 
 # Hung-Hsuan Chen <hhchen@psu.edu>
 # Creation Date : 12-19-2012
-# Last Modified: Mon 24 Nov 2014 08:39:16 PM CST
+# Last Modified: Mon 24 Nov 2014 08:34:36 PM CST
 
 import os
 import sys
 
 import gflags
 
-import mysql_util
+import odbc_util
 import settings.field_mapping
 
 from lxml import etree
@@ -53,7 +53,7 @@ def assign_xml_node_text(node, text):
 def create_solr_doc_files(table_name, field_mapping, solr_file_folder, solr_doc_filename_prefix):
     batchsize = 100000
 
-    db, cursor = mysql_util.init_db()
+    db, cursor = odbc_util.init_db()
     print 'Querying database'
     sql = 'SELECT %s FROM %s' % (','.join(field_mapping.keys()), table_name)
 
@@ -93,7 +93,7 @@ def create_solr_doc_files(table_name, field_mapping, solr_file_folder, solr_doc_
         tree.write(f, encoding='utf8', pretty_print=True)
         f.close()
 
-    mysql_util.close_db(db, cursor)
+    odbc_util.close_db(db, cursor)
 
 
 def create_partial_solr_schema(field_mapping, solr_file_folder):
