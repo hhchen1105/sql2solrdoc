@@ -2,7 +2,7 @@
 
 # Hung-Hsuan Chen <hhchen@psu.edu>
 # Creation Date : 12-19-2012
-# Last Modified: Fri 21 Nov 2014 04:14:36 PM CST
+# Last Modified: Mon 24 Nov 2014 08:36:50 PM CST
 
 import os
 import sys
@@ -80,6 +80,8 @@ def create_solr_doc_files(table_name, field_mapping, solr_file_folder, solr_doc_
                     ele.text = str(col) if col is not None else '0'
                 elif field_type in ['date']:
                     ele.text = col.strftime("%Y-%m-%dT%H:%M:%SZ") if col is not None else ''
+                elif field_type in ['boolean']:
+                    ele.text = 'true' if col else 'false'
                 else:
                     raise Exception('\nUndefined field type "%s"' % (field_type))
                 doc.append(ele)
