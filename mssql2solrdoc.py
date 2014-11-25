@@ -2,7 +2,7 @@
 
 # Hung-Hsuan Chen <hhchen@psu.edu>
 # Creation Date : 12-19-2012
-# Last Modified: Tue 25 Nov 2014 10:07:26 AM CST
+# Last Modified: Wed 26 Nov 2014 06:22:40 AM CST
 
 import os
 import sys
@@ -19,7 +19,7 @@ FLAGS = gflags.FLAGS
 gflags.DEFINE_string('solr_doc_filename_prefix', '', '')
 
 def usage(cmd):
-    print ('Usage: %s --sql_doc_filename_prefix="product"' % (cmd))
+    print ('Usage: %s --solr_doc_filename_prefix="product"' % (cmd))
     return
 
 
