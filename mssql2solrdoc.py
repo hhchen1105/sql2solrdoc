@@ -2,7 +2,7 @@
 
 # Hung-Hsuan Chen <hhchen@psu.edu>
 # Creation Date : 12-19-2012
-# Last Modified: Tue 25 Nov 2014 09:14:29 AM CST
+# Last Modified: Tue 25 Nov 2014 10:07:26 AM CST
 
 import os
 import sys
@@ -98,7 +98,7 @@ def create_solr_doc_files(table_name, field_mapping, solr_file_folder, solr_doc_
 
 
 def create_partial_solr_schema(field_mapping, solr_file_folder, solr_doc_filename_prefix):
-    with open(os.path.join(solr_file_folder, '%s_schema.xml' % (solr_doc_filename_prefix)), 'w') as f:
+    with open(os.path.join(solr_file_folder, '%s_schema.txt' % (solr_doc_filename_prefix)), 'w') as f:
         for (field_name, field_type) in field_mapping.values():
             f.write('<field name="%s" type="%s" indexed="true" stored="true" required="true" multiValued="false"/>\n'
                     % (field_name, field_type))
