@@ -2,7 +2,7 @@
 
 # Hung-Hsuan Chen <hhchen@psu.edu>
 # Creation Date : 12-19-2012
-# Last Modified: Wed 26 Nov 2014 06:22:40 AM CST
+# Last Modified: Wed 25 Feb 2015 03:10:19 PM CST
 
 import os
 import sys
@@ -44,11 +44,19 @@ def valid_XML_char_ordinal(i):
 
 
 def assign_xml_node_text(node, text):
-    text = text if isinstance(text, str) else str(text)
+    #try:
+    #    node.text = text.encode('utf8') if text is not None else ''
+    #except:
+    #    node.text = ''.join(c for c in text if valid_XML_char_ordinal(ord(c))).decode('utf8')
+    #    print "Unexpected error:", sys.exc_info()[0]
+    #    raise
+    if not isinstance(text, unicode):
+        text = text if isinstance(text, str) else str(text)
     try:
-        node.text = text.encode('utf8') if text is not None else ''
+        node.text = text if text is not None else ''
     except:
-        node.text = ''.join(c for c in text if valid_XML_char_ordinal(ord(c))).decode('utf8')
+        node.text = ''.join([c for c in text if valid_XML_char_ordinal(ord(c))])
+        print text
 
 
 def create_solr_doc_files(table_name, field_mapping, solr_file_folder, solr_doc_filename_prefix):
